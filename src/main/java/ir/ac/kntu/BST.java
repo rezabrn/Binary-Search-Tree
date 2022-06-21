@@ -22,9 +22,9 @@ public class BST {
     }
 
     public void command(String input) {
-        // if (input.contains("Show")) {
-        // show(root);
-        /*} else*/ if (input.contains("Add")) {
+        if (input.contains("Show")) {
+        show(root);
+        } else if (input.contains("Add")) {
             int key = Integer.parseInt(input.substring(input.indexOf("[") + 1,
             input.indexOf("]")));
             System.out.println(add(root, key));
@@ -32,17 +32,15 @@ public class BST {
             Node node = new Node(Integer.parseInt(input.substring(input.indexOf("[") + 1, input.indexOf("]"))));
             int key = Integer.parseInt(input.substring(input.indexOf("["), input.indexOf("]")));
             System.out.println(remove(node, key));
-        } /*
-           * else if (input.contains("Update")) {
-           * int key1 = Integer.parseInt(input.substring(input.indexOf("e[") + 1,
-           * input.indexOf("] ")));
-           * input = input.substring(0, input.indexOf("] ")) +
-           * input.substring(input.indexOf("] " + 1));
-           * int key2 = Integer.parseInt(input.substring(input.indexOf("o [") + 1,
-           * input.indexOf("]")));
-           * update(key1, key2);
-           * }
-           */ else if (input.contains("Serach")) {
+        } else if (input.contains("Update")) {
+            Node node1 = new Node(Integer.parseInt(input.substring(input.indexOf("e[") + 1,
+            input.indexOf("] "))));
+            input = input.substring(0, input.indexOf("] ")) +
+            input.substring(input.indexOf("] " + 1));
+            Node node2 = new Node(Integer.parseInt(input.substring(input.indexOf("o [") + 1,
+            input.indexOf("]"))));
+            update(node1, node2);
+        } else if (input.contains("Serach")) {
             int key = Integer.parseInt(input.substring(input.indexOf("[" + 1, input.indexOf("]"))));
             System.out.println(search(root, key));
         } else if (input.contains("Equal")) {
@@ -56,22 +54,13 @@ public class BST {
         }
     }
 
-    public void show(Node node) {
-        System.out.println(node.getKey());
-        if (node.getRight() == null && node.getLeft() == null) {
-            return;
+    public Node show(Node node) {
+        if (node.getLeft() == null && node.getRight() == null) {
+            return null;
         } else {
-            if (node.getKey() == root.getKey()) {
-                System.out.println("root = \n" + node);
-            } else {
-                System.out.println("node = \n" + node.getKey());
-            }
-            if (node.getLeft() != null) {
-                show(node.getLeft());
-            }
-            if (node.getRight() != null) {
-                show(node.getRight());
-            }
+            System.out.println(node);
+            return show(node.getLeft());
+            // return show(node.getRight());
         }
     }
 
@@ -136,23 +125,8 @@ public class BST {
         return minv;
     }
 
-    // public void update(int key1, int key2) {
-    // for (Node node : nodes) {
-    // if (node.getKey() == key1) {
-    // if (node.getRight().getKey() > key2 && node.getLeft().getKey() < key2) {
-    // node.setKey(key2);
-    // } else {
-    // System.out.println("the operation is illegal");
-    // }
-    // }
-    // }
-    // }
-
-    // public void update(Node node, int key1, int key2) {
-    // if (node.getKey() == key1) {
-
-    // }
-    // }
+    public void update(Node node1, Node node2) {
+    }
 
     public boolean search(Node node, int key) {
         if (node == null)
