@@ -4,42 +4,28 @@ import java.net.PortUnreachableException;
 import java.util.ArrayList;
 
 public class BST {
-    private Node root;
+    // private Node root;
 
     private ArrayList<Node> nodes;
 
-    public BST(int key) {
-        root = new Node(key);
-        nodes = new ArrayList<>();
+    public BST() {
     }
 
-    public Node getRoot() {
-        return root;
-    }
-
-    public void setRoot(Node root) {
-        this.root = root;
-    }
-
-    public void command(String input) {
+    public void command(String input, Node root) {
         if (input.contains("Show")) {
-        show(root);
+            printTree(root);
         } else if (input.contains("Add")) {
             int key = Integer.parseInt(input.substring(input.indexOf("[") + 1,
-            input.indexOf("]")));
-            System.out.println(add(root, key));
+                    input.indexOf("]")));
+            printTree(add(root, key));
         } else if (input.contains("Remove")) {
-            Node node = new Node(Integer.parseInt(input.substring(input.indexOf("[") + 1, input.indexOf("]"))));
-            int key = Integer.parseInt(input.substring(input.indexOf("["), input.indexOf("]")));
-            System.out.println(remove(node, key));
+            int key = Integer.parseInt(input.substring(input.indexOf("[") + 1, input.indexOf("]")));
+            printTree(remove(root, key));
         } else if (input.contains("Update")) {
-            Node node1 = new Node(Integer.parseInt(input.substring(input.indexOf("e[") + 1,
-            input.indexOf("] "))));
-            input = input.substring(0, input.indexOf("] ")) +
-            input.substring(input.indexOf("] " + 1));
-            Node node2 = new Node(Integer.parseInt(input.substring(input.indexOf("o [") + 1,
-            input.indexOf("]"))));
-            update(node1, node2);
+            int key1 = Integer.parseInt(input.substring(input.indexOf("e[") + 2, input.indexOf("] ")));
+            input = input.substring(input.indexOf("] ") + 1);
+            int key2 = Integer.parseInt(input.substring(input.indexOf("o [") + 3, input.indexOf("]")));
+            printTree(update(root, key1, key2));
         } else if (input.contains("Serach")) {
             int key = Integer.parseInt(input.substring(input.indexOf("[" + 1, input.indexOf("]"))));
             System.out.println(search(root, key));
@@ -54,63 +40,34 @@ public class BST {
         }
     }
 
-    public Node show(Node node) {
-        if (node.getLeft() == null && node.getRight() == null) {
-            return null;
-        } else {
-            System.out.println(node);
-            return show(node.getLeft());
-            // return show(node.getRight());
+    public Node add(Node node, int key) {
+        if (node == null) {
+            node = new Node(key);
+            return node;
         }
-    }
-
-    Node add(Node root, int key) {
-        /*
-         * If the tree is empty,
-         * return a new node
-         */
-        if (root == null) {
-            root = new Node(key);
-            return root;
+        if (key < node.getKey()) {
+            node.setLeft(add(node.getLeft(), key));
+            node.getLeft().setParent(node);
+        } else if (key > node.getKey()) {
+            node.setRight(add(node.getRight(), key));
+            node.getRight().setParent(node);
         }
-
-        /* Otherwise, recur down the tree */
-        if (key < root.getKey())
-            root.setLeft(add(root.getLeft(), key));
-        else if (key > root.getKey())
-            root.setRight(add(root.getRight(), key));
-
-        /* return the (unchanged) node pointer */
-        return root;
+        return node;
     }
 
     Node remove(Node root, int key) {
-        /* Base Case: If the tree is empty */
         if (root == null)
             return root;
-
-        /* Otherwise, recur down the tree */
         if (key < root.getKey()) {
             root.setLeft(remove(root.getLeft(), key));
         } else if (key > root.getKey()) {
             root.setRight(remove(root.getRight(), key));
-        }
-
-        // if key is same as root's
-        // key, then This is the
-        // node to be deleted
-        else {
-            // node with only one child or no child
+        } else {
             if (root.getLeft() == null)
                 return root.getRight();
             else if (root.getRight() == null)
                 return root.getLeft();
-
-            // node with two children: Get the inorder
-            // successor (smallest in the right subtree)
             root.setKey(minValue(root.getRight()));
-
-            // Delete the inorder successor
             root.setRight(remove(root.getRight(), root.getKey()));
         }
         return root;
@@ -125,7 +82,9 @@ public class BST {
         return minv;
     }
 
-    public void update(Node node1, Node node2) {
+    public Node update(Node node, int key1, int key2) {
+        Node n = remove(node, key1);
+        return add(node, key2);
     }
 
     public boolean search(Node node, int key) {
@@ -134,35 +93,22 @@ public class BST {
 
         if (node.getKey() == key)
             return true;
-
-        // then recur on left subtree /
         boolean res1 = search(node.getLeft(), key);
-
-        // node found, no need to look further
         if (res1)
             return true;
-
-        // node is not found in left,
-        // so recur on right subtree /
         boolean res2 = search(node.getRight(), key);
 
         return res2;
     }
 
     public boolean isEqual(Node root1, Node root2) {
-        // Check if both the trees are empty
         if (root1 == null && root2 == null) {
             return true;
-        }
-        // If any one of the tree is non-empty
-        // and other is empty, return false
-        else if (root1 != null && root2 == null)
+        } else if (root1 != null && root2 == null)
             return false;
         else if (root1 == null && root2 != null)
             return false;
         else {
-            // Check if current data of both trees equal
-            // and recursively check for left and right subtrees
             if (root1.getKey() == root2.getKey() && isEqual(root1.getLeft(), root2.getLeft()) == true
                     && isEqual(root1.getRight(), root2.getRight()) == true)
                 return true;
@@ -182,6 +128,112 @@ public class BST {
                 return (lDepth + 1);
             else
                 return (rDepth + 1);
+        }
+    }
+
+    static void printTreeInOrder(Node entry) {
+        if (entry != null) {
+            printTreeInOrder(entry.getLeft());
+            if (entry != null) {
+                System.out.println(entry.getKey());
+            }
+            printTreeInOrder(entry.getRight());
+        }
+    }
+
+    private void printTreePreOrder(Node entry) {
+        if (entry != null) {
+            if (entry.getKey() != 0) {
+                System.out.println(entry.getKey());
+            }
+            printTreeInOrder(entry.getLeft());
+            printTreeInOrder(entry.getRight());
+        }
+    }
+
+    private void printTreePostOrder(Node entry) {
+        if (entry != null) {
+            printTreeInOrder(entry.getLeft());
+            printTreeInOrder(entry.getRight());
+            if (entry.getKey() != 0) {
+                System.out.println(entry.getKey());
+            }
+        }
+    }
+
+    protected Node getMinimum(Node node) {
+        while (node.getLeft() != null) {
+            node = node.getLeft();
+        }
+        return node;
+    }
+
+    protected Node getMaximum(Node node) {
+        while (node.getRight() != null) {
+            node = node.getRight();
+        }
+        return node;
+    }
+
+    protected Node getSuccessor(Node node) {
+        // if there is getRight() branch, then successor is getLeft()most node of that
+        // subtree
+        if (node.getRight() != null) {
+            return getMinimum(node.getRight());
+        } else { // otherwise it is a lowest ancestor whose getLeft() child is also
+            // ancestor of node
+            Node currentNode = node;
+            Node parentNode = node.getParent();
+            while (parentNode != null && currentNode == parentNode.getRight()) {
+                // go up until we find parent that currentNode is not in getRight()
+                // subtree.
+                currentNode = parentNode;
+                parentNode = parentNode.getParent();
+            }
+            return parentNode;
+        }
+    }
+
+    // -------------------------------- TREE PRINTING
+    // ------------------------------------
+
+    public void printTree(Node root) {
+        printSubtree(root);
+    }
+
+    public void printSubtree(Node node) {
+        if (node.getRight() != null) {
+            printTree(node.getRight(), true, "");
+        }
+        printNodeValue(node);
+        if (node.getLeft() != null) {
+            printTree(node.getLeft(), false, "");
+        }
+    }
+
+    private void printNodeValue(Node node) {
+        if (node.getKey() == 0) {
+            System.out.print("<null>");
+        } else {
+            System.out.print(node.getKey());
+        }
+        System.out.println();
+    }
+
+    private void printTree(Node node, boolean isgetRight, String indent) {
+        if (node.getRight() != null) {
+            printTree(node.getRight(), true, indent + (isgetRight ? "        " : " |      "));
+        }
+        System.out.print(indent);
+        if (isgetRight) {
+            System.out.print(" /");
+        } else {
+            System.out.print(" \\");
+        }
+        System.out.print("----- ");
+        printNodeValue(node);
+        if (node.getLeft() != null) {
+            printTree(node.getLeft(), false, indent + (isgetRight ? " |      " : "        "));
         }
     }
 }
