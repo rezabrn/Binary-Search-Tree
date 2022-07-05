@@ -7,11 +7,6 @@ import javax.management.relation.Role;
 
 public class BST {
 
-    private ArrayList<Node> nodes;
-
-    public BST() {
-    }
-
     public void command(String input, Node root) {
         if (input.contains("Show")) {
             printTree(root);
@@ -27,7 +22,13 @@ public class BST {
             input = input.substring(input.indexOf("] ") + 1);
             int key2 = Integer.parseInt(input.substring(input.indexOf("o [") + 3, input.indexOf("]")));
             printTree(update(root, key1, key2));
-        } else if (input.contains("Serach")) {
+        } else {
+            command2(input, root);
+        }
+    }
+
+    public void command2(String input, Node root) {
+        if (input.contains("Serach")) {
             int key = Integer.parseInt(input.substring(input.indexOf("[" + 1, input.indexOf("]"))));
             System.out.println(search(root, key));
         } else if (input.contains("Equal")) {
@@ -58,8 +59,9 @@ public class BST {
     }
 
     public Node remove(Node root, int key) {
-        if (root == null)
+        if (root == null) {
             return root;
+        }
         if (key < root.getKey()) {
             root.setLeft(remove(root.getLeft(), key));
         } else if (key > root.getKey()) {
@@ -100,7 +102,8 @@ public class BST {
         } else if (key1 < node.getKey()) {
             node.setLeft(update(node.getLeft(), key1, key2));
         } else {
-            if (key2 > node.getLeft().getKey() && key2 < node.getRight().getKey() && key2 < minValue(node.getRight()) && key2 > maxValue(node.getLeft())) {
+            if (key2 > node.getLeft().getKey() && key2 < node.getRight().getKey() && key2 < minValue(node.getRight())
+                    && key2 > maxValue(node.getLeft())) {
                 node.setKey(key2);
             } else {
                 remove(rootFinder(node), node.getKey());
@@ -120,16 +123,17 @@ public class BST {
     }
 
     public boolean search(Node node, int key) {
-        if (node == null)
+        if (node == null) {
             return false;
-
-        if (node.getKey() == key)
+        }
+        if (node.getKey() == key) {
             return true;
+        }
         boolean res1 = search(node.getLeft(), key);
-        if (res1)
+        if (res1) {
             return true;
+        }
         boolean res2 = search(node.getRight(), key);
-
         return res2;
     }
 
@@ -154,13 +158,13 @@ public class BST {
         if (node == null) {
             return -1;
         } else {
-            int lDepth = depth(node.getLeft());
-            int rDepth = depth(node.getRight());
-
-            if (lDepth > rDepth)
-                return (lDepth + 1);
-            else
-                return (rDepth + 1);
+            int leftDepth = depth(node.getLeft());
+            int rightDepth = depth(node.getRight());
+            if (leftDepth > rightDepth) {
+                return (leftDepth + 1);
+            } else {
+                return (rightDepth + 1);
+            }
         }
     }
 
@@ -173,62 +177,6 @@ public class BST {
             printTreeInOrder(entry.getRight());
         }
     }
-
-    private void printTreePreOrder(Node entry) {
-        if (entry != null) {
-            if (entry.getKey() != 0) {
-                System.out.println(entry.getKey());
-            }
-            printTreeInOrder(entry.getLeft());
-            printTreeInOrder(entry.getRight());
-        }
-    }
-
-    private void printTreePostOrder(Node entry) {
-        if (entry != null) {
-            printTreeInOrder(entry.getLeft());
-            printTreeInOrder(entry.getRight());
-            if (entry.getKey() != 0) {
-                System.out.println(entry.getKey());
-            }
-        }
-    }
-
-    protected Node getMinimum(Node node) {
-        while (node.getLeft() != null) {
-            node = node.getLeft();
-        }
-        return node;
-    }
-
-    protected Node getMaximum(Node node) {
-        while (node.getRight() != null) {
-            node = node.getRight();
-        }
-        return node;
-    }
-
-    protected Node getSuccessor(Node node) {
-        // if there is getRight() branch, then successor is getLeft()most node of that
-        // subtree
-        if (node.getRight() != null) {
-            return getMinimum(node.getRight());
-        } else { // otherwise it is a lowest ancestor whose getLeft() child is also
-            // ancestor of node
-            Node currentNode = node;
-            Node parentNode = node.getParent();
-            while (parentNode != null && currentNode == parentNode.getRight()) {
-                // go up until we find parent that currentNode is not in getRight()
-                // subtree.
-                currentNode = parentNode;
-                parentNode = parentNode.getParent();
-            }
-            return parentNode;
-        }
-    }
-
-    // -------------------------------- TREE PRINTING
-    // ------------------------------------
 
     public void printTree(Node root) {
         printSubtree(root);
