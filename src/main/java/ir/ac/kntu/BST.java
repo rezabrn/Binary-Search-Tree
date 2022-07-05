@@ -3,6 +3,8 @@ package ir.ac.kntu;
 import java.net.PortUnreachableException;
 import java.util.ArrayList;
 
+import javax.management.relation.Role;
+
 public class BST {
     // private Node root;
 
@@ -55,7 +57,7 @@ public class BST {
         return node;
     }
 
-    Node remove(Node root, int key) {
+    public Node remove(Node root, int key) {
         if (root == null)
             return root;
         if (key < root.getKey()) {
@@ -63,17 +65,18 @@ public class BST {
         } else if (key > root.getKey()) {
             root.setRight(remove(root.getRight(), key));
         } else {
-            if (root.getLeft() == null)
+            if (root.getLeft() == null) {
                 return root.getRight();
-            else if (root.getRight() == null)
+            } else if (root.getRight() == null) {
                 return root.getLeft();
+            }
             root.setKey(minValue(root.getRight()));
             root.setRight(remove(root.getRight(), root.getKey()));
         }
         return root;
     }
 
-    int minValue(Node root) {
+    public int minValue(Node root) {
         int minv = root.getKey();
         while (root.getLeft() != null) {
             minv = root.getLeft().getKey();
@@ -82,9 +85,38 @@ public class BST {
         return minv;
     }
 
+    public int maxValue(Node root) {
+        int maxv = root.getKey();
+        while (root.getRight() != null) {
+            maxv = root.getRight().getKey();
+            root = root.getRight();
+        }
+        return maxv;
+    }
+
     public Node update(Node node, int key1, int key2) {
-        Node n = remove(node, key1);
-        return add(node, key2);
+        if (key1 > node.getKey()) {
+            node.setRight(update(node.getRight(), key1, key2));
+        } else if (key1 < node.getKey()) {
+            node.setLeft(update(node.getLeft(), key1, key2));
+        } else {
+            if (key2 > node.getLeft().getKey() && key2 < node.getRight().getKey() && key2 < minValue(node.getRight()) && key2 > maxValue(node.getLeft())) {
+                node.setKey(key2);
+            } else {
+                remove(rootFinder(node), node.getKey());
+                add(rootFinder(node), key2);
+            }
+        }
+
+        return node;
+    }
+
+    public Node rootFinder(Node node) {
+        if (node.getParent() == null) {
+            return node;
+        } else {
+            return node.getParent();
+        }
     }
 
     public boolean search(Node node, int key) {
