@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import javax.management.relation.Role;
 
 public class BST {
-    // private Node root;
 
     private ArrayList<Node> nodes;
 
@@ -32,11 +31,12 @@ public class BST {
             int key = Integer.parseInt(input.substring(input.indexOf("[" + 1, input.indexOf("]"))));
             System.out.println(search(root, key));
         } else if (input.contains("Equal")) {
-            Node node1 = new Node(Integer.parseInt(input.substring(input.indexOf("[") + 1,
-                    input.indexOf("-"))));
-            Node node2 = new Node(Integer.parseInt(input.substring(input.indexOf("-") + 1,
-                    input.indexOf("]"))));
-            System.out.println(isEqual(node1, node2));
+            System.out.println("make a new tree to compare");
+            if (isEqual(root, Main.startTree())) {
+                System.out.println("they are the same");
+            } else {
+                System.out.println("they are different");
+            }
         } else if (input.contains("Depth")) {
             System.out.println(depth(root));
         }
@@ -136,16 +136,17 @@ public class BST {
     public boolean isEqual(Node root1, Node root2) {
         if (root1 == null && root2 == null) {
             return true;
-        } else if (root1 != null && root2 == null)
+        } else if (root1 != null && root2 == null) {
             return false;
-        else if (root1 == null && root2 != null)
+        } else if (root1 == null && root2 != null) {
             return false;
-        else {
+        } else {
             if (root1.getKey() == root2.getKey() && isEqual(root1.getLeft(), root2.getLeft()) == true
-                    && isEqual(root1.getRight(), root2.getRight()) == true)
+                    && isEqual(root1.getRight(), root2.getRight()) == true) {
                 return true;
-            else
+            } else {
                 return false;
+            }
         }
     }
 
