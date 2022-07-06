@@ -28,9 +28,13 @@ public class BST {
     }
 
     public void command2(String input, Node root) {
-        if (input.contains("Serach")) {
-            int key = Integer.parseInt(input.substring(input.indexOf("[" + 1, input.indexOf("]"))));
-            System.out.println(search(root, key));
+        if (input.contains("Search")) {
+            int key = Integer.parseInt(input.substring(input.indexOf("[") + 1, input.indexOf("]")));
+            if (search(root, key)) {
+                System.out.println("the node exits in tree");
+            } else {
+                System.out.println("the node dosent exit in tree");
+            }
         } else if (input.contains("Equal")) {
             System.out.println("make a new tree to compare");
             if (isEqual(root, Main.startTree())) {
@@ -168,21 +172,7 @@ public class BST {
         }
     }
 
-    static void printTreeInOrder(Node entry) {
-        if (entry != null) {
-            printTreeInOrder(entry.getLeft());
-            if (entry != null) {
-                System.out.println(entry.getKey());
-            }
-            printTreeInOrder(entry.getRight());
-        }
-    }
-
-    public void printTree(Node root) {
-        printSubtree(root);
-    }
-
-    public void printSubtree(Node node) {
+    public void printTree(Node node) {
         if (node.getRight() != null) {
             printTree(node.getRight(), true, "");
         }
@@ -192,7 +182,7 @@ public class BST {
         }
     }
 
-    private void printNodeValue(Node node) {
+    public void printNodeValue(Node node) {
         if (node.getKey() == 0) {
             System.out.print("<null>");
         } else {
@@ -201,7 +191,7 @@ public class BST {
         System.out.println();
     }
 
-    private void printTree(Node node, boolean isgetRight, String indent) {
+    public void printTree(Node node, boolean isgetRight, String indent) {
         if (node.getRight() != null) {
             printTree(node.getRight(), true, indent + (isgetRight ? "        " : " |      "));
         }
