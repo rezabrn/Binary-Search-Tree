@@ -183,11 +183,7 @@ public class BST {
     }
 
     public void printNodeValue(Node node) {
-        if (node.getKey() == 0) {
-            System.out.print("<null>");
-        } else {
-            System.out.print(node.getKey());
-        }
+        System.out.print(node.getKey());
         System.out.println();
     }
 
